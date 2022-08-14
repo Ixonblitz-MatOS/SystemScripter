@@ -2,7 +2,7 @@ datetime
 colorama
 netifaces
 psutil
-cpuinfo
+py-cpuinfo
 platform
 tabulate
 GPUtil
