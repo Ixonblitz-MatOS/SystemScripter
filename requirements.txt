@@ -1,9 +1,0 @@
-datetime
-colorama
-netifaces
-psutil
-cpuinfo
-platform
-tabulate
-GPUtil
-socket
