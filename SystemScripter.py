@@ -272,7 +272,6 @@ class Storage:
             return disk_usage(f'C:/').total
         else:
             return disk_usage(f'{DriveLetter}/').total
-
     def get_disk_info(self, options:StorageOptions):
         """
         :return: Disk Info {Device, Total, Used, Free, Percent, FSType, Mountpoint}
