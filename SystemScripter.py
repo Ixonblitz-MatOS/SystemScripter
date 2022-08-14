@@ -11,7 +11,7 @@ from tabulate import tabulate
 from colorama import Fore
 import socket
 class Prerequisites:
-    def get_size(bytes, suffix="B"):
+    def get_size(self,bytes, suffix="B"):
         """
         Scale bytes to its proper format
         e.g:
@@ -23,7 +23,7 @@ class Prerequisites:
             if bytes < factor:
                 return f"{bytes:.2f}{unit}{suffix}"
             bytes /= factor
-class cpu(classmethod):
+class cpu():
     def Cpu(self):
         """
         :return: Full CPU Info
@@ -115,7 +115,7 @@ class cpu(classmethod):
         :return: Current Per CPU utilization
         """
         return cpu_percent(interval=1, percpu=True)
-class ram(classmethod):
+class ram():
     def TotalRam(self,bytes:bool):
         """
         :return: Memory Size
@@ -152,41 +152,13 @@ class ram(classmethod):
         """
         return virtual_memory().percent
 class NetworkOptions:
-    def NAME(self):
-        """
-        :return: Network Name
-        """
-        return "NAME"
-    def ADDRESS(self):
-        """
-        :return: Address only
-        """
-        return "ADDRESS"
-    def NETMASK(self):
-        """
-        :return: Netmask Only
-        """
-        return "NETMASK"
-    def BROADCAST(self):
-        """
-        :return: Broadcast Only
-        """
-        return "BROADCAST"
-    def BYTESSENT(self):
-        """
-        :return: Bytes Sent Only
-        """
-        return "BYTESSENT"
-    def BYTESRECEIVED(self):
-        """
-        :return: Bytes Received only
-        """
-        return "BYTESRECIEVED"
-    def ALL(self):
-        """
-        :return: ALL CHOICES IN ARRAY
-        """
-        return "ALL"
+    NAME="NAME"
+    ADDRESS="ADDRESS"
+    NETMASK="NETMASK"
+    BROADCAST="BROADCAST"
+    BYTESSENT="BYTESSENT"
+    BYTESRECEIVED="BYTESRECIEVED"
+    ALL="ALL"
 class Network:
     def NetInfo(self,options:NetworkOptions,tab:bool):
         """
@@ -210,12 +182,14 @@ class Network:
                     tabArr.append(address.address)
                     tabArr.append(address.netmask)
                     tabArr.append(address.broadcast)
-                    tabArr.append(Prerequisites.get_size(net_io.bytes_sent))
-                    tabArr.append(Prerequisites.get_size(net_io.bytes_recv))
+                    s = Prerequisites()
+                    tabArr.append(Prerequisites.get_size(s,net_io.bytes_sent))
+                    tabArr.append(Prerequisites.get_size(s,net_io.bytes_recv))
                     return(tabulate(tabArr,headers=("Name","Address","Netmask","Broadcast","Bytes Sent","Bytes Received")))
                 else:
+                    s = Prerequisites()
                     return (interface_name, address.address, address.netmask, address.broadcast,
-                        Prerequisites.get_size(net_io.bytes_sent), Prerequisites.get_size(net_io.bytes_recv))
+                        Prerequisites.get_size(s,net_io.bytes_sent), Prerequisites.get_size(s,net_io.bytes_recv))
             elif options == NetworkOptions.NAME:
                 if tab:
                     return(tabulate(interface_name,headers="Name"))
@@ -238,14 +212,18 @@ class Network:
                     return address.broadcast
             elif options == NetworkOptions.BYTESSENT:
                 if tab:
-                    return(tabulate(Prerequisites.get_size(net_io.bytes_sent), headers="Bytes Sent"))
+                    s = Prerequisites()
+                    return(tabulate(Prerequisites.get_size(s,net_io.bytes_sent), headers="Bytes Sent"))
                 else:
-                    return Prerequisites.get_size(net_io.bytes_sent)
+                    s = Prerequisites()
+                    return Prerequisites.get_size(s,net_io.bytes_sent)
             elif options == NetworkOptions.BYTESRECEIVED:
                 if tab:
-                    return(tabulate(Prerequisites.get_size(net_io.bytes_recv), headers="Bytes Received"))
+                    s = Prerequisites()
+                    return(tabulate(Prerequisites.get_size(s,net_io.bytes_recv), headers="Bytes Received"))
                 else:
-                    return Prerequisites.get_size(net_io.bytes_recv)
+                    s = Prerequisites()
+                    return Prerequisites.get_size(s,net_io.bytes_recv)
             else:
                 if tab:
                     tabArr = []
@@ -253,12 +231,14 @@ class Network:
                     tabArr.append(address.address)
                     tabArr.append(address.netmask)
                     tabArr.append(address.broadcast)
-                    tabArr.append(Prerequisites.get_size(net_io.bytes_sent))
-                    tabArr.append(Prerequisites.get_size(net_io.bytes_recv))
+                    s = Prerequisites()
+                    tabArr.append(Prerequisites.get_size(s,net_io.bytes_sent))
+                    tabArr.append(Prerequisites.get_size(s,net_io.bytes_recv))
                     return(tabulate(tabArr,headers=("Name","Address","Netmask","Broadcast","Bytes Sent","Bytes Received")))
                 else:
+                    s = Prerequisites()
                     return (interface_name, address.address, address.netmask, address.broadcast,
-                        Prerequisites.get_size(net_io.bytes_sent), Prerequisites.get_size(net_io.bytes_recv))
+                        Prerequisites.get_size(s,net_io.bytes_sent), Prerequisites.get_size(s,net_io.bytes_recv))
     def GetIP(self):
         """
         :return: gets IP NO CIDR
@@ -275,46 +255,14 @@ class Network:
         default_gateway = gateways['default'][netifaces.AF_INET][0]
         return default_gateway
 class StorageOptions():
-    def DEVICE(self):
-        """
-        :return: Returns Device Only
-        """
-        return "DEVICE"
-    def TOTAL(self):
-        """
-        :return: Total Only
-        """
-        return "TOTAL"
-    def USED(self):
-        """
-        :return: Used Only
-        """
-        return "USED"
-    def FREE(self):
-        """
-        :return: Free Only
-        """
-        return "FREE"
-    def PERCENT(self):
-        """
-        :return: Percent only
-        """
-        return "PERCENT"
-    def FSTYPE(self):
-        """
-        :return: FSType Only
-        """
-        return "FSTYPE"
-    def MOUNTPOINT(self):
-        """
-        :return: Mountpoint Only
-        """
-        return "MOUNTPOINT"
-    def ALL(self):
-        """
-        :return: All of them
-        """
-        return "ALL"
+    DEVICE="DEVICE"
+    TOTAL="TOTAL"
+    USED="USED"
+    FREE="FREE"
+    PERCENT="PERCENT"
+    FSTYPE="FSTYPE"
+    MOUNTPOINT="MOUNTPOINT"
+    ALL="ALL"
 class Storage:
     def StorageSize(self,DriveLetter):
         """
@@ -345,55 +293,23 @@ class Storage:
                 'mountpoint': part.mountpoint
             })
         if options == StorageOptions.ALL: return disk_info
-        elif options == StorageOptions.FREE: return disk_info['free']
-        elif options == StorageOptions.USED: return disk_info['used']
-        elif options == StorageOptions.TOTAL: return disk_info['total']
-        elif options == StorageOptions.DEVICE: return disk_info['device']
-        elif options == StorageOptions.FSTYPE: return disk_info['fstype']
-        elif options == StorageOptions.MOUNTPOINT: return disk_info['mountpoint']
-        elif options == StorageOptions.PERCENT: return disk_info['percent']
+        elif options == StorageOptions.FREE: return disk_info[0]['free']
+        elif options == StorageOptions.USED: return disk_info[0]['used']
+        elif options == StorageOptions.TOTAL: return disk_info[0]['total']
+        elif options == StorageOptions.DEVICE: return disk_info[0]['device']
+        elif options == StorageOptions.FSTYPE: return disk_info[0]['fstype']
+        elif options == StorageOptions.MOUNTPOINT: return disk_info[0]['mountpoint']
+        elif options == StorageOptions.PERCENT: return disk_info[0]['percent']
         else: return disk_info
 class GPUOptions:
-    def IDONLY(self):
-        """
-        :return: Returns only the GPU ID
-        """
-        return "IDONLY"
-    def NAMEONLY(self):
-        """
-        :return: returns only the GPU name
-        """
-        return "NAMEONLY"
-    def LOADONLY(self):
-        """
-        :return: Returns GPU load only
-        """
-        return "LOADONLY"
-    def FREEMEMONLY(self):
-        """
-        :return: returns GPU free memory only
-        """
-        return "FREEMEMONLY"
-    def USEDMEMONLY(self):
-        """
-        :return: returns only the used GPU memory
-        """
-        return "USEDMEMONLY"
-    def TOTALMEMONLY(self):
-        """
-        :return: returns all the memory of the GPU
-        """
-        return "TOTALMEMONLY"
-    def TEMPONLY(self):
-        """
-        :return: Returns only GPU Temperature
-        """
-        return "TEMPONLY"
-    def SHOWALL(self):
-        """
-        :return: returns all tabulated
-        """
-        return "SHOWALL"
+    IDONLY="IDONLY"
+    NAMEONLY="NAMEONLY"
+    LOADONLY="LOADONLY"
+    FREEMEMONLY="FREEMEMONLY"
+    USEDMEMONLY="USEDMEMONLY"
+    TOTALMEMONLY="TOTALMEMONLY"
+    TEMPONLY="TEMPONLY"
+    SHOWALL="SHOWALL"
 class GPUExceptions(Exception):
     def _err(GPUExceptions,message):
         print(Fore.RED,message)
@@ -406,7 +322,9 @@ class GPU:
         :return: tabulated info or diff by options
         """
         if(type(options) == None): options = GPUOptions.SHOWALL
-        elif(type(options) != GPUOptions): GPUExceptions.WrongType(GPUExceptions)
+        elif(type(options) != GPUOptions):
+            z=GPUExceptions()
+            GPUExceptions.WrongType(z)
         elif options == GPUOptions.SHOWALL:
             gpus = GPUtil.getGPUs()
             list_gpus = []
