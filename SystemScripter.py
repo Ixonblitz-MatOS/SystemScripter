@@ -1,8 +1,9 @@
 #Ixonblitz-MatOS
 import netifaces
 from psutil import virtual_memory,disk_usage,net_io_counters,net_if_addrs,cpu_count,cpu_freq,cpu_percent,disk_partitions
-from os import name
+from os import name,popen
 from wmi import WMI
+import subprocess
 from cpuinfo import get_cpu_info
 from platform import uname
 from os import getlogin
@@ -467,13 +468,13 @@ def OS(options:OSoptions,tab:bool):
             return(tabulate(final,headers=("Operating System", "Release Number")))
         else:
             return (platform.system(),platform.release())
-def Motherboard():
+def Motherboard_Name():
     """
     :return: Motherboard
     """
-    c = WMI()
-    my_sys = c.Win32_ComputerSystem()[0]
-    return my_sys.SystemFamily
+    s=subprocess.Popen(['wmic', 'baseboard','get','product'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    out,err = s.communicate()
+    return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r","")
 def SystemName():
     """
     :return: PC NAME
