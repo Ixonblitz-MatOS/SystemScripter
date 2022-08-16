@@ -1,7 +1,7 @@
 #Ixonblitz-MatOS
 import netifaces
 from psutil import virtual_memory,disk_usage,net_io_counters,net_if_addrs,cpu_count,cpu_freq,cpu_percent,disk_partitions
-from os import name,popen
+from os import name
 from wmi import WMI
 import subprocess
 from cpuinfo import get_cpu_info
@@ -30,7 +30,7 @@ class cpu():
         :return: Full CPU Info
         """
         return get_cpu_info()['brand_raw']
-    def Cpubrand(self):
+    def CpuBrand(self):
         """
         :return: CPU Brand
         """
