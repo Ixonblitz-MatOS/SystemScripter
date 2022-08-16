@@ -470,11 +470,32 @@ def OS(options:OSoptions,tab:bool):
             return (platform.system(),platform.release())
 def Motherboard_Name():
     """
-    :return: Motherboard
+    :return: Motherboard model name
     """
     s=subprocess.Popen(['wmic', 'baseboard','get','product'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     out,err = s.communicate()
     return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r","")
+def Motherboard_Manufacturer():
+    """
+    :return:Motherboard Manufacturer
+    """
+    s=subprocess.Popen(['wmic','baseboard','get','Manufacturer'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    out,err=s.communicate()
+    return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r","")
+def Motherboard_Serial():
+    """
+    :return: Motherboard Serial Number
+    """
+    s=subprocess.Popen(['wmic','baseboard','get','serialnumber'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    out,err=s.communicate()
+    return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r", "")
+def Motherboard_Version():
+    """
+       :return: Motherboard Version
+       """
+    s = subprocess.Popen(['wmic', 'baseboard', 'get', 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = s.communicate()
+    return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r", "")
 def SystemName():
     """
     :return: PC NAME
@@ -485,3 +506,7 @@ def ActiveUser():
     :return: Gets the Active user
     """
     return getlogin()
+def Change_Windows_Computer_Name(NewName:str,username:str,password:str):
+    c = WMI()
+    for system in c.Win32_ComputerSystem():
+        system.Rename(NewName, username, password)
