@@ -25,99 +25,99 @@ class Prerequisites:
                 return f"{bytes:.2f}{unit}{suffix}"
             bytes /= factor
 class cpu():
-    def Cpu(self):
+    def Cpu(self)->str:
         """
         :return: Full CPU Info
         """
         return get_cpu_info()['brand_raw']
-    def CpuBrand(self):
+    def CpuBrand(self)->str:
         """
         :return: CPU Brand
         """
         return get_cpu_info()['brand']
-    def CpuModel(self):
+    def CpuModel(self)->str:
         """
         :return: CPU Model
         """
         return get_cpu_info()['model']
-    def CpuFamily(self):
+    def CpuFamily(self)->str:
         """
         :return: CPU Family
         """
         return get_cpu_info()['family']
-    def CpuBits(self):
+    def CpuBits(self)->str:
         """
         :return: CPU Bits
         """
         return get_cpu_info()['bits']
-    def CpuCount(self):
+    def CpuCount(self)->str:
         """
         :return: CPU Count
         """
         return get_cpu_info()['count']
-    def CpuArch(self):
+    def CpuArch(self)->str:
         """
         :return: CPU Architecture
         """
         return get_cpu_info()['raw_arch_string']
-    def CpuL1InstructionCache(self):
+    def CpuL1InstructionCache(self)->str:
         """
         :return: CPU L1 Instruction Cache size
         """
         return get_cpu_info()['l1_instruction_cache_size']
-    def CpuL1dataCache(self):
+    def CpuL1dataCache(self)->str:
         """
         :return: CPU L1 data cache size
         """
         return get_cpu_info()['l1_data_cache_size']
-    def CpuL2Cache(self):
+    def CpuL2Cache(self)->str:
         """
         :return: CPU L2 Data Cache Size
         """
         return get_cpu_info()['l2_cache_size']
-    def CpuL3Cache(self):
+    def CpuL3Cache(self)->str:
         """
         CPU L3 Data Cache Size
         :return:
         """
         return get_cpu_info()['l3_cache_size']
-    def CpuCorePhysical(self):
+    def CpuCorePhysical(self)->int:
         """
         :return: physical core count
         """
         return cpu_count(logical=False)
-    def CpuCoreLogical(self):
+    def CpuCoreLogical(self)->int:
         """
         :return: logical core count
         """
         return cpu_count(logical=True)
-    def CpuCurrentFrequency(self):
+    def CpuCurrentFrequency(self)->float:
         """
         :return: returns current frequency
         """
         return cpu_freq().current
-    def CpuMinFrequency(self):
+    def CpuMinFrequency(self)->float:
         """
         :return: returns Minimum Frequency
         """
         return cpu_freq().min
-    def CpuMaxFrequency(self):
+    def CpuMaxFrequency(self)->float:
         """
         :return: returns Max Frequency
         """
         return cpu_freq().max
-    def CpuCurrentUtil(self):
+    def CpuCurrentUtil(self)->float:
         """
         :return: Current CPU current utilization
         """
         return cpu_percent(interval=1)
-    def CpuPerCurrentUtil(self):
+    def CpuPerCurrentUtil(self)->float:
         """
         :return: Current Per CPU utilization
         """
         return cpu_percent(interval=1, percpu=True)
 class ram():
-    def TotalRam(self,bytes:bool):
+    def TotalRam(self,bytes:bool)->float:
         """
         :return: Memory Size
         """
@@ -127,7 +127,7 @@ class ram():
             return virtual_memory().total
         else:
             return round(virtual_memory().total/1000000000, 2)
-    def AvailableRam(self, bytes:bool):
+    def AvailableRam(self, bytes:bool)->float:
         """
         :return: Available Ram
         """
@@ -137,7 +137,7 @@ class ram():
             return virtual_memory().available
         else:
             return round(virtual_memory().available / 1000000000, 2)
-    def UsedRam(self,bytes:bool):
+    def UsedRam(self,bytes:bool)->float:
         """
         :return: Used Ram
         """
@@ -147,7 +147,7 @@ class ram():
             return virtual_memory().used
         else:
             return round(virtual_memory().used/1000000000, 2)
-    def UsedRamPercentage(self):
+    def UsedRamPercentage(self)->float:
         """
         :return: Ram Percentage
         """
@@ -161,7 +161,7 @@ class NetworkOptions:
     BYTESRECEIVED="BYTESRECIEVED"
     ALL="ALL"
 class Network:
-    def NetInfo(self,options:NetworkOptions,tab:bool):
+    def NetInfo(self,options:NetworkOptions,tab:bool)->str | tuple:
         """
         :return: all network info separated in vars
         """
@@ -240,7 +240,7 @@ class Network:
                     s = Prerequisites()
                     return (interface_name, address.address, address.netmask, address.broadcast,
                         Prerequisites.get_size(s,net_io.bytes_sent), Prerequisites.get_size(s,net_io.bytes_recv))
-    def GetIP(self):
+    def GetIP(self)->str:
         """
         :return: gets IP NO CIDR
         """
@@ -248,7 +248,7 @@ class Network:
         s.connect(("8.8.8.8", 80))
         ip = (s.getsockname()[0])
         return ip
-    def GetDefault(self):
+    def GetDefault(self)->str:
         """
         :return: default gateway
         """
@@ -265,7 +265,7 @@ class StorageOptions():
     MOUNTPOINT="MOUNTPOINT"
     ALL="ALL"
 class Storage:
-    def StorageSize(self,DriveLetter):
+    def StorageSize(self,DriveLetter)->int:
         """
         :return: Storage Size of Designated Drive
         """
@@ -273,7 +273,7 @@ class Storage:
             return disk_usage(f'C:/').total
         else:
             return disk_usage(f'{DriveLetter}/').total
-    def get_disk_info(self, options:StorageOptions):
+    def get_disk_info(self, options:StorageOptions)->str|int|float|list:
         """
         :return: Disk Info {Device, Total, Used, Free, Percent, FSType, Mountpoint}
         """
@@ -317,7 +317,7 @@ class GPUExceptions(Exception):
     def WrongType(GPUExceptions):
         GPUExceptions._err("Wrong type provided")
 class GPU:
-    def GPUInfo(self, options:GPUOptions, tab:bool):
+    def GPUInfo(self, options:GPUOptions, tab:bool)->str|list:
         """
         :return: tabulated info or diff by options
         """
@@ -438,22 +438,10 @@ class GPU:
             else:
                 return list_gpus
 class OSoptions:
-    def OSNAME(self):
-        """
-        :return: Operating System Name
-        """
-        return "OSNAME"
-    def RELEASE(self):
-        """
-        :return: Operating System Release
-        """
-        return "RELEASE"
-    def ALL(self):
-        """"
-        :return: All Choices
-        """
-        return "ALL"
-def OS(options:OSoptions,tab:bool):
+    OSNAME="OSNAME"
+    RELEASE="RELEASE"
+    ALL="ALL"
+def OS(options:OSoptions,tab:bool)->str|tuple:
     """
     :return: Operating System Information
     """
@@ -468,45 +456,45 @@ def OS(options:OSoptions,tab:bool):
             return(tabulate(final,headers=("Operating System", "Release Number")))
         else:
             return (platform.system(),platform.release())
-def Motherboard_Name():
+def Motherboard_Name()->str:
     """
     :return: Motherboard model name
     """
     s=subprocess.Popen(['wmic', 'baseboard','get','product'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     out,err = s.communicate()
     return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r","")
-def Motherboard_Manufacturer():
+def Motherboard_Manufacturer()->str:
     """
     :return:Motherboard Manufacturer
     """
     s=subprocess.Popen(['wmic','baseboard','get','Manufacturer'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     out,err=s.communicate()
     return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r","")
-def Motherboard_Serial():
+def Motherboard_Serial()->str:
     """
     :return: Motherboard Serial Number
     """
     s=subprocess.Popen(['wmic','baseboard','get','serialnumber'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     out,err=s.communicate()
     return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r", "")
-def Motherboard_Version():
+def Motherboard_Version()->str:
     """
        :return: Motherboard Version
        """
     s = subprocess.Popen(['wmic', 'baseboard', 'get', 'version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = s.communicate()
     return out.__str__().split("\n")[0].split(r"\n")[1].split(r"\\r")[0].replace(r"\r", "")
-def SystemName():
+def SystemName()->str:
     """
     :return: PC NAME
     """
     return uname().node
-def ActiveUser():
+def ActiveUser()->str:
     """
     :return: Gets the Active user
     """
     return getlogin()
-def Change_Windows_Computer_Name(NewName:str,username:str,password:str):
+def Change_Windows_Computer_Name(NewName:str,username:str,password:str)->None:
     c = WMI()
     for system in c.Win32_ComputerSystem():
         system.Rename(NewName, username, password)
