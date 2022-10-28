@@ -729,8 +729,11 @@ class TextIoWrapper(TextIOWrapper):
     def fwritelines(self,lines:list):
         self.writelines(lines)
         return self
+    def fclose(self):
+        self.close()
+        return self
 @staticmethod
-def open(file, mode="r", buffering=-1, encoding=None, errors=None,
+def fopen(file, mode="r", buffering=-1, encoding=None, errors=None,
          newline=None, closefd=True, opener=None)->TextIoWrapper:
     if not isinstance(file, int):file = os.fspath(file)
     if not isinstance(file, (str, bytes, int)):raise TypeError("invalid file: %r" % file)
@@ -789,12 +792,6 @@ def open(file, mode="r", buffering=-1, encoding=None, errors=None,
         raise
 class Prerequisites:
     def get_size(self,bytes, suffix="B"):
-        """
-        Scale bytes to its proper format
-        e.g:
-            1253656 => '1.20MB'
-            1253656678 => '1.17GB'
-        """
         factor = 1024
         for unit in ["", "K", "M", "G", "T", "P"]:
             if bytes < factor:
@@ -929,15 +926,15 @@ class ram():
         """
         return virtual_memory().percent
 class NetworkOptions:
-    NAME="NAME"
-    ADDRESS="ADDRESS"
-    NETMASK="NETMASK"
-    BROADCAST="BROADCAST"
-    BYTESSENT="BYTESSENT"
-    BYTESRECEIVED="BYTESRECIEVED"
-    ALL="ALL"
+    NAME=Literal["NAME"]
+    ADDRESS=Literal["ADDRESS"]
+    NETMASK=Literal["NETMASK"]
+    BROADCAST=Literal["BROADCAST"]
+    BYTESSENT=Literal["BYTESSENT"]
+    BYTESRECEIVED=Literal["BYTESRECIEVED"]
+    ALL=Literal["ALL"]
 class Network:
-    def NetInfo(self,options:str,tab:bool)->str | tuple:
+    def NetInfo(self,options:Literal,tab:bool)->str | tuple:
         """
         :parameter tab: Tabulate if True
         :return: all network info separated in vars
@@ -969,25 +966,17 @@ class Network:
                     return (interface_name, address.address, address.netmask, address.broadcast,
                         Prerequisites.get_size(s,net_io.bytes_sent), Prerequisites.get_size(s,net_io.bytes_recv))
             elif options == NetworkOptions.NAME:
-                if tab:
-                    return(tabulate(interface_name,headers="Name"))
-                else:
-                    return interface_name
+                if tab:return(tabulate(interface_name,headers="Name"))
+                else:return interface_name
             elif options == NetworkOptions.NETMASK:
-                if tab:
-                    return(tabulate(address.netmask,headers="Netmask"))
-                else:
-                    return address.netmask
+                if tab:return(tabulate(address.netmask,headers="Netmask"))
+                else:return address.netmask
             elif options == NetworkOptions.ADDRESS:
-                if tab:
-                    return(tabulate(address.address,headers="Address"))
-                else:
-                    return address.address
+                if tab:return(tabulate(address.address,headers="Address"))
+                else:return address.address
             elif options == NetworkOptions.BROADCAST:
-                if tab:
-                    return(tabulate(address.broadcast,headers="Broadcast"))
-                else:
-                    return address.broadcast
+                if tab:return(tabulate(address.broadcast,headers="Broadcast"))
+                else:return address.broadcast
             elif options == NetworkOptions.BYTESSENT:
                 if tab:
                     s = Prerequisites()
@@ -1034,22 +1023,20 @@ class Network:
         return default_gateway
 class StorageOptions():
     DEVICE=Literal["DEVICE"]
-    TOTAL="TOTAL"
-    USED="USED"
-    FREE="FREE"
-    PERCENT="PERCENT"
-    FSTYPE="FSTYPE"
-    MOUNTPOINT="MOUNTPOINT"
-    ALL="ALL"
+    TOTAL=Literal["TOTAL"]
+    USED=Literal["USED"]
+    FREE=Literal["FREE"]
+    PERCENT=Literal["PERCENT"]
+    FSTYPE=Literal["FSTYPE"]
+    MOUNTPOINT=Literal["MOUNTPOINT"]
+    ALL=Literal["ALL"]
 class Storage:
     def StorageSize(self,DriveLetter)->int:
         """
         :return: Storage Size of Designated Drive
         """
-        if DriveLetter == None:
-            return disk_usage(f'C:/').total
-        else:
-            return disk_usage(f'{DriveLetter}/').total
+        if DriveLetter == None:return disk_usage(f'C:/').total
+        else:return disk_usage(f'{DriveLetter}/').total
     def get_disk_info(self, options:Literal)->str|int|float|list:
         """
         :return: Disk Info {Device, Total, Used, Free, Percent, FSType, Mountpoint}
@@ -1373,6 +1360,6 @@ def createNewConnection(name:str, SSID:str, password:str,Authentification_Type:s
 		</security>
 	</MSM>
 </WLANProfile>"""
-	open(name+".xml", 'w').write(config)
+	fopen(name+".xml", 'w').write(config).close()
 	os.system("netsh wlan add profile filename=\""+name+".xml\""+" interface=Wi-Fi")
 def connect(name:str, SSID:str)->None:os.system("netsh wlan connect name=\""+name+"\" ssid=\""+SSID+"\" interface=Wi-Fi")
