@@ -1,5 +1,4 @@
 <h1>SystemScripter</h1>
-<h2>Can be installed with: <code>pip install SystemScripter</code></h2>
 <h2>Classes:</h2>
 <h3>Prerequisites:</h3>
 <h4>This class is only used for the get_size() which is used by other classes, not intended for user use</h4>
